@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="vis.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="vis.min.css"></link>
+
+  </head>
+  <body>
+
+    <div id="viewport"></div>
+
+  <script type="text/javascript">
+    var colorOf = function(l) {
+      if (l < 0) { return '#ff8888' } else { return '#8888ff' }
+    };
+
+    var VERTICES = 10;
+    var total = 0;
+    var nodes = new vis.DataSet();
+    for (var i = 1; i < VERTICES; i++) {
+      var nodeValue = Math.round(10*Math.random() - 5);
+      nodes.add({ id: i, label: nodeValue.toString(), color: colorOf(nodeValue) });
+      total += nodeValue;
+    }
+    // special node that we will compensate with
+    nodes.add({ id: 0, label: 0 });
+
+    var edges = new vis.DataSet();
+    var edgeCount = 0;
+    for (var i = 0; i < VERTICES; i++) {
+      for (var j = i+1; j < VERTICES; j++) {
+        if (Math.random() < 1.0/3.0) {
+          edges.add({ from: i, to: j });
+          edgeCount++;
+        }
+      }
+    }
+
+    var corrValue = (edgeCount - VERTICES + 1) - total + 2;  // 2 leeway points
+    nodes.update({ id: 0, label: corrValue.toString(), color: colorOf(corrValue) });
+
+
+    var container = $('#viewport')[0];
+    var network = new vis.Network(container, { nodes: nodes, edges: edges }, {});
+
+    network.on("click", function(params) {
+      var thisNode = network.getNodeAt(params.pointer.DOM);
+      if (typeof(thisNode) === 'undefined') { return; }
+      
+      var scale;
+      if (params.event.srcEvent.shiftKey) {
+        scale = -1;
+      }
+      else{
+        scale = 1;
+      }
+
+      var conn = network.getConnectedNodes(thisNode);
+      for (var i = 0; i < conn.length; i++) {
+        var newLabel = parseInt(nodes.get(conn[i]).label) + scale;
+        nodes.update({ id: conn[i], label: newLabel.toString(), color: colorOf(newLabel) });
+      }
+      var newLabel = parseInt(nodes.get(thisNode).label) - scale*conn.length;
+      nodes.update({ id: thisNode, label: newLabel.toString(), color: colorOf(newLabel) });
+    });
+
+  </script>
+  </body>
+</html>
