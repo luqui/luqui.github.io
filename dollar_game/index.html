@@ -15,10 +15,10 @@
 
   <script type="text/javascript">
     var colorOf = function(l) {
-      if (l < 0) { return '#ff8888' } else { return '#8888ff' }
+      if (l < 0) { return '#ffaaaa' } else { return '#aaaaff' }
     };
 
-    var VERTICES = 13;
+    var VERTICES = 10;
     var total = 0;
     var nodes = new vis.DataSet();
     for (var i = 1; i < VERTICES; i++) {
@@ -40,7 +40,7 @@
       }
     }
 
-    var corrValue = (edgeCount - VERTICES + 1) - total + 2;  // 2 leeway points
+    var corrValue = (edgeCount - VERTICES + 1) - total + 0;  // 0 leeway points
     nodes.update({ id: 0, label: corrValue.toString(), color: colorOf(corrValue) });
 
 
