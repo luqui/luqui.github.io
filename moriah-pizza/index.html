@@ -1,0 +1,76 @@
+<html>
+ <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script>
+  
+    var pepperonis = [];
+    var numSlices = 2;
+
+    function setup() {
+      createCanvas(1280, 1024);
+
+      for (let i = 0; i < 20; i++) {
+        pepperonis.push ([(Math.random()-0.5)*1280, (Math.random()-0.5)*1024]);
+      }
+      
+      drawPizza();
+    }
+
+    function drawPizza() {
+      translate(1280/2, 1024/2);
+      background(150, 75, 0);
+
+      for (let i = -1024/2; i < 1024/2; i += 200) {
+        stroke(0,0,0,0);
+        fill(175, 80, 10);
+        rect(-1280/2, i, 1280, 100);
+      }
+
+      
+      slices(() => { crust(); slice() });
+
+      push();
+      clip(() => {
+        slices(() => slice());
+      });
+      cheese();
+      for (let p of pepperonis) {
+        fill(200, 100, 100);
+        stroke(0);
+        circle(p[0], p[1], 100);
+      }
+      pop();
+    }
+
+    function slices(cb) {
+      push();
+      for (let i = 0; i < numSlices; i++) {
+        cb();
+        rotate(TWO_PI/10);
+      }
+      pop();
+    }
+
+    function cheese() {
+      for (let i = 0; i < 10000; i++) {
+        fill(190 + 20 * Math.random(), 190 + 20 * Math.random(), 100);
+        stroke(0, 0, 0, 0);
+        circle((Math.random()-0.5)*1280, (Math.random()-0.5)*1024, 20);
+      }
+    }
+
+    function crust() {
+      fill(100, 50, 0);
+      stroke(0);
+      arc(0, 0, 1000, 1000, 0, TWO_PI/10, PIE);
+    }
+
+    function slice() {
+      fill(200, 200, 100);
+      stroke(0);
+      arc(0, 0, 800, 800, 0, TWO_PI/10, PIE);
+    }
+  </script>
+ </head>
+</html>
+
