@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TADA List</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: linear-gradient(135deg, #fff5f7, #fdf2f8);
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .main-content {
+            max-width: 600px;
+        }
+
+        @media (max-width: 1000px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #db2777;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #fbcfe8;
+            border-radius: 20px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f472b6;
+            box-shadow: 0 0 10px #fbcfe8;
+        }
+
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #ec4899, #db2777);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(219, 39, 119, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .date-group {
+            margin-bottom: 2rem;
+        }
+
+        .date-header {
+            color: #db2777;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #fbcfe8;
+        }
+
+        #list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .delete-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #fca5a5;
+        }
+
+        .list-item:hover .delete-btn {
+            opacity: 0.5;
+        }
+
+        .delete-btn:hover {
+            opacity: 1 !important;
+            transform: translateY(-50%);
+            box-shadow: none;
+        }
+
+        .sparkle {
+            font-size: 1.5em;
+        }
+
+        .sparkle.celebrate {
+            animation: sparkleRotate 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .item-text {
+            flex-grow: 1;
+            margin-right: 30px;
+        }
+
+        .congrats {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #ec4899, #db2777);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 20px;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.3);
+        }
+
+        .gift-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.1);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            overflow: hidden;
+        }
+
+        .gift-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #ec4899, #db2777);
+        }
+
+        .gift-card::after {
+            content: '💝';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2em;
+            opacity: 0.2;
+        }
+
+        .gift-header {
+            color: #db2777;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .gift-text {
+            line-height: 1.6;
+            color: #4a4a4a;
+            white-space: pre-line;
+            font-size: 0.95em;
+        }
+
+        .hearts {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            50% {
+                transform: scale(1.05) translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -100px);
+            }
+            50% {
+                transform: translate(-50%, 10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @keyframes sparkleRotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+
+        .list-item.deleting {
+            animation: fadeOut 0.3s forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1>✨ TADA List 💖</h1>
+        
+        <div class="input-group">
+            <input type="text" id="newItem" placeholder="What amazing thing did you do?" />
+            <button onclick="addItem()">Add ✨</button>
+        </div>
+
+        <div id="list"></div>
+    </div>
+
+    <div class="gift-card">
+        <div class="gift-header">My Moriah,</div>
+        <div class="gift-text">Watching you work, I continue to be impressed by you. Running a business is so complicated! There are so many moving parts, and I see you just do each next thing as it comes: gradually organizing, building your systems, learning how to work with each of your people, using your support structures to your advantage, keeping at it when it's tough, and always asking yourself what the right thing to do is.
+
+            You are so competent and powerful, and you do it with kindness and integrity. I made this app to help remind you just how much you do so you never have to feel like you're not doing enough -- it's obvious enough to me, but you're the one who needs to see the evidence! You deserve to feel so good about yourself, and I love you!
+
+            Love, Luke
+</div>
+    </div>
+
+    <script>
+        const congratsMessages = [
+            "You're amazing! 💖",
+            "Yasss queen! 👑",
+            "So proud of you! 🌸",
+            "You're crushing it! ✨",
+            "Girl, you're on fire! 💫",
+            "Absolutely fabulous! 🎀",
+            "You go girl! 💝"
+        ];
+
+        const emojis = ["✨", "💖", "🌸", "💫", "🎀", "💝"];
+        const storedData = JSON.parse(localStorage.getItem('tadaItems') || '[]');
+        const items = storedData.map(item => 
+            typeof item === 'string' ? 
+            { 
+                id: Date.now() + Math.random(),
+                text: item, 
+                emoji: emojis[Math.floor(Math.random() * emojis.length)],
+                date: new Date().toISOString()
+            } : {...item, id: item.id || Date.now() + Math.random()}
+        );
+        renderItems();
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', { 
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+        }
+
+        function deleteItem(id, element) {
+            element.classList.add('deleting');
+            setTimeout(() => {
+                const index = items.findIndex(item => item.id === id);
+                if (index > -1) {
+                    items.splice(index, 1);
+                    localStorage.setItem('tadaItems', JSON.stringify(items));
+                    renderItems();
+                }
+            }, 300);
+        }
+
+        function addItem() {
+            const input = document.getElementById('newItem');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const newItem = {
+                id: Date.now() + Math.random(),
+                text: text,
+                emoji: emojis[Math.floor(Math.random() * emojis.length)],
+                date: new Date().toISOString()
+            };
+            
+            items.unshift(newItem);
+            localStorage.setItem('tadaItems', JSON.stringify(items));
+            input.value = '';
+            
+            showCongrats();
+            createHearts();
+            renderItems(true);
+        }
+
+        function renderItems(isNewItem = false) {
+            const list = document.getElementById('list');
+            const groupedItems = items.reduce((groups, item) => {
+                const dateKey = formatDate(item.date);
+                if (!groups[dateKey]) {
+                    groups[dateKey] = [];
+                }
+                groups[dateKey].push(item);
+                return groups;
+            }, {});
+
+            list.innerHTML = Object.entries(groupedItems).map(([date, dateItems]) => `
+                <div class="date-group">
+                    <h2 class="date-header">${date}</h2>
+                    ${dateItems.map(item => `
+                        <li class="list-item">
+                            <span class="sparkle${isNewItem ? ' celebrate' : ''}">${item.emoji}</span>
+                            <span class="item-text">${item.text}</span>
+                            <button class="delete-btn" onclick="deleteItem(${item.id}, this.parentElement)">×</button>
+                        </li>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function showCongrats() {
+            const message = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+            const congrats = document.createElement('div');
+            congrats.className = 'congrats';
+            congrats.textContent = message;
+            document.body.appendChild(congrats);
+            
+            setTimeout(() => congrats.remove(), 2000);
+        }
+
+        function createHearts() {
+            const hearts = document.createElement('div');
+            hearts.className = 'hearts';
+            hearts.style.left = Math.random() * window.innerWidth + 'px';
+            hearts.style.top = '100%';
+            hearts.innerHTML = '💝';
+            hearts.style.position = 'fixed';
+            hearts.style.fontSize = '24px';
+            hearts.style.animation = 'float 2s ease-out forwards';
+            document.body.appendChild(hearts);
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-100vh) rotate(${Math.random() * 360}deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            setTimeout(() => {
+                hearts.remove();
+                style.remove();
+            }, 2000);
+        }
+
+        document.getElementById('newItem').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addItem();
+        });
+    </script>
+</body>
+</html>
