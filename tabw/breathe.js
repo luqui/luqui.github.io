@@ -4,7 +4,6 @@
   style.textContent = `
     body, a, button, input[type="submit"], input[type="button"], label, [role="button"] {
       cursor: none !important;
-      display: inline-block !important;
     }
     .custom-cursor {
       position: fixed;
