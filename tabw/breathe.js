@@ -90,7 +90,7 @@
       });
     });
 
-    const expandSelectors = 'img';
+    const expandSelectors = '.image-block';
     document.querySelectorAll(expandSelectors).forEach(el => {
       el.addEventListener('mouseenter', () => {
         gsap.to(el, {
