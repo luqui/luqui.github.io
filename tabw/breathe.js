@@ -41,6 +41,7 @@
       mouseY = e.clientY;
     });
 
+    // Cursor animations and dynamic elements
     gsap.ticker.add(() => {
       posX += (mouseX - posX) * 0.15;
       posY += (mouseY - posY) * 0.15;
@@ -90,7 +91,7 @@
       });
     });
 
-    const expandSelectors = '.image-block';
+    const expandSelectors = 'img, .image-block';
     document.querySelectorAll(expandSelectors).forEach(el => {
       el.addEventListener('mouseenter', () => {
         gsap.to(el, {
@@ -111,4 +112,23 @@
     });
   };
   document.head.appendChild(gsapScript);
+
+  // Lenis smooth scrolling
+  const lenisScript = document.createElement("script");
+  lenisScript.src = "https://unpkg.com/lenis@1.3.4/dist/lenis.min.js";
+  lenisScript.onload = () => {
+    const lenis = new Lenis({
+      duration: 1.5,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  };
+  document.head.appendChild(lenisScript);
 })();
