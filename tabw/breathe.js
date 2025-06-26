@@ -2,6 +2,13 @@
   if (!window.matchMedia("(pointer: fine)").matches)
     return;
 
+  function getCursorSpeed() {
+    const params = new URLSearchParams(window.location.search);
+    const value = parseFloat(params.get("cursorSpeed"));
+    return isFinite(value) ? value : 20.0; // default to 5.0 if not set or invalid
+  }
+  const cursorSpeed = getCursorSpeed();
+
   // Inject CSS
   const style = document.createElement("style");
   style.textContent = `
@@ -47,8 +54,7 @@
     // Cursor animations and dynamic elements
     gsap.ticker.add((_time, dtMs) => {
       const dt = dtMs / 1000;
-      const lerpSpeed = 20;
-      const p = 1 - Math.exp (-lerpSpeed * dt);
+      const p = 1 - Math.exp (-cursorSpeed * dt);
       posX += (mouseX - posX) * p;
       posY += (mouseY - posY) * p;
       gsap.set(cursor, { x: posX, y: posY });
