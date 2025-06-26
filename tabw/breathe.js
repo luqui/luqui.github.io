@@ -45,9 +45,12 @@
     });
 
     // Cursor animations and dynamic elements
-    gsap.ticker.add(() => {
-      posX += (mouseX - posX) * 0.15;
-      posY += (mouseY - posY) * 0.15;
+    gsap.ticker.add((_time, dtMs) => {
+      const dt = dtMs / 1000;
+      const lerpSpeed = 20;
+      const p = 1 - Math.exp (-lerpSpeed * dt);
+      posX += (mouseX - posX) * p;
+      posY += (mouseY - posY) * p;
       gsap.set(cursor, { x: posX, y: posY });
     });
 
