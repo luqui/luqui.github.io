@@ -5,7 +5,7 @@
   function getCursorSpeed() {
     const params = new URLSearchParams(window.location.search);
     const value = parseFloat(params.get("cursorSpeed"));
-    return isFinite(value) ? value : 20.0; // default to 5.0 if not set or invalid
+    return isFinite(value) ? value : 18.0; // default to 18.0 if not set or invalid
   }
   const cursorSpeed = getCursorSpeed();
 
